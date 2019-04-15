@@ -1,37 +1,62 @@
-from pathlib import Path
-
-from flask import Flask, redirect
-from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
-from flask_sqlalchemy import SQLAlchemy
-
-app = Flask(__name__)
-
-current_dir = Path.cwd()
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{current_dir}/cities.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = '123'
-
-db = SQLAlchemy(app)
+from weather import get_weather
+from cities_db_manager import db, City
 
 
-class City(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True)
-    city_name = db.Column(db.String(120), index=True)
 
 
-db.create_all()
-
-app.config['FLASK_ADMIN_SWATCH'] = 'flatly'
-admin = Admin(app, name='Database', template_mode='bootstrap3')
-admin.add_view(ModelView(City, db.session))
+# словарь, в котором ключи будут юзернеймами, а значения - True/False
+waiting_for_cities = {}
+cities = {}
 
 
-@app.route("/")
-def hello():
-    return redirect('/admin/city/')
 
+def process_chat_message(msg):
+    text = msg['text']
+    username = msg['from']['username']
+    print(username + ': ' + text)
 
-if __name__ == '__main__':
-    app.run()
+    if text == 'Установить город':
+        reply = 'Отправь мне свой город'
+        waiting_for_cities[username] = True
+
+    elif text == 'Узнать погоду':
+
+        # пытаемся достать город из базы данных
+        city_from_db = City.query.filter_by(username=username).first()
+
+        # если он есть - достаем имя и запрашиваем погоду
+        if city_from_db:
+            city_name = city_from_db.city_name
+            reply = get_weather(city_name)
+        else:
+            reply = 'Сначала установи город.'
+
+    else:
+        # если бот ждет от пользователя город - то сохраняем пользовательский ввод.
+        # иначе говорим, что не поняли пользователя
+        if username in waiting_for_cities and waiting_for_cities[username] == True:
+
+            # пытаемся достать город из базы данных
+            city_from_db = City.query.filter_by(username=username).first()
+
+            # если он есть - меняем имя города на новое (которое передал юзер)
+            if city_from_db:
+                city_from_db.city_name = text
+
+            # если его нет - создаем новый город
+            else:
+                city_from_db = City(city_name=text, username=username)
+
+            # сохраняем город обратно в базу
+            db.session.add(city_from_db)
+            db.session.commit()
+
+            waiting_for_cities[username] = False
+
+            reply = 'Устанавливаю город ' + text
+        else:
+
+            reply = 'Я еще совсем маленький и не понимаю человеческую речь. Воспользуйся кнопками, пожалуйста.'
+
+    buttons = [['Установить город', 'Узнать погоду']]
+    return reply, buttons
