@@ -12,7 +12,7 @@ cities = {}
 
 def process_chat_message(msg):
     text = msg['text']
-    username = msg['from']['username']
+    username = str(msg['from']['id'])
     print(username + ': ' + text)
 
     if text == 'Установить город':
