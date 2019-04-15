@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "app_function": "server.app",
+    "profile_name": "macs",
+    "project_name": "macs-weatherbot",
+    "runtime": "python3.6",
+    "s3_bucket": "zappa-wdfmp12gy",
+    "events": [
+      {
+        "function": "remind_about_weather.remind",
+        "expression": "cron(0 7 * * ? *)"
+      }
+    ]
+  }
+}
