@@ -1,9 +1,5 @@
 from weather import get_weather
 from cities_db_manager import db, City
-
-
-
-
 # словарь, в котором ключи будут юзернеймами, а значения - True/False
 waiting_for_cities = {}
 cities = {}
@@ -21,13 +17,11 @@ def process_chat_message(msg):
 
     elif text == 'Узнать погоду':
 
-        # пытаемся достать город из базы данных
-        city_from_db = City.query.filter_by(username=username).first()
-
-        # если он есть - меняем имя города на новое (которое передал юзер)
-        if city_from_db:
-            city_name = city_from_db.city_name
-            reply = get_weather(city_name)
+        # если бот уже запомнил город человека - узнаем погоду в этом городе.
+        # иначе просим установить город
+        if username in cities:
+            city = cities[username]
+            reply = get_weather(city)
         else:
             reply = 'Сначала установи город.'
 

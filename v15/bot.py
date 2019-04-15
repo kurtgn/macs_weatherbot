@@ -1,3 +1,5 @@
+# добавим реальный запрос погоды
+
 
 
 from time import sleep
@@ -34,14 +36,4 @@ def on_chat_message(msg):
             resize_keyboard=True
         )
     )
-
-# создаем конфигурацию бота: словарь с нашими функциями (пока что одной)
-telepot_config = {'chat': on_chat_message}
-
-# запускаем цикл
-bot.message_loop(telepot_config)
-
-# Входим в бесконечный цикл, чтобы программа не останавливалась и бот работал
-while True:
-    sleep(10)
 

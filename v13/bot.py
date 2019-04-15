@@ -22,7 +22,6 @@ telepot.api._methodurl = _methodurl
 
 
 bot = Bot('779201721:AAGtKbHrgAS99WeI9pT5qrxhX0fyM3xtP4E')
-bot.setWebhook(None)
 
 
 # функция приема нового сообщения

@@ -5,8 +5,8 @@ waiting_for_cities = {}
 cities = {}
 
 
-
 def process_chat_message(msg):
+
     text = msg['text']
     username = msg['from']['username']
     print(username + ': ' + text)
@@ -28,8 +28,7 @@ def process_chat_message(msg):
     else:
         # если бот ждет от пользователя город - то сохраняем пользовательский ввод.
         # иначе говорим, что не поняли пользователя
-        if username in waiting_for_cities and waiting_for_cities[
-            username] == True:
+        if username in waiting_for_cities and waiting_for_cities[username] == True:
             cities[username] = text
             waiting_for_cities[username] = False
             reply = 'Устанавливаю город ' + text

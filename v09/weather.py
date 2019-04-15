@@ -24,3 +24,7 @@ def get_weather(city):
     response = city + ': ' + str(temp) + ' градусов, ' + description
     return response
 
+
+if __name__ == '__main__':
+    weather = get_weather('Москва')
+    print(weather)

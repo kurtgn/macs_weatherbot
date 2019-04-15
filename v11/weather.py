@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import requests
 
 
@@ -14,13 +16,22 @@ def get_weather(city):
 
     data = response.json()
 
-    # сохраним температуру в переменной temp
-    temp = data['main']['temp']
+    pprint(data)
 
-    # сохраним описание в переменной description
-    description = data['weather'][0]['description']
+    if 'main' not in data:
+        response = 'Город ' + city + ' не найден. Вы нигде не опечатались?'
+    else:
+        # сохраним температуру в переменной temp
+        temp = data['main']['temp']
 
-    # сохраним полный ответ в переменной response и вернем ее
-    response = city + ': ' + str(temp) + ' градусов, ' + description
+        # сохраним описание в переменной description
+        description = data['weather'][0]['description']
+
+        # сохраним полный ответ в переменной response и вернем ее
+        response = city + ': ' + str(temp) + ' градусов, ' + description
     return response
 
+
+if __name__ == '__main__':
+    weather = get_weather('Москва')
+    print(weather)

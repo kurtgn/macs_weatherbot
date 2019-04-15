@@ -1,12 +1,5 @@
-from pprint import pprint
-
-import requests
 from weather import get_weather
-
-
-jsonstore_url = 'https://www.jsonstore.io/c4a09b5c42a254591516d574d76b99f3c52988f3eac7f9b9c6c383d32f979f02'
-waiting_url = jsonstore_url + '/waiting/'
-cities_url = jsonstore_url + '/cities/'
+from cities_db_manager import db, City
 
 
 
@@ -16,49 +9,57 @@ waiting_for_cities = {}
 cities = {}
 
 
-def set_waiting(chat_id):
-    waiting = requests.get(waiting_url).json().get('result') or {}
-    waiting[chat_id] = True
-    requests.post(waiting_url, json=waiting)
+def set_waiting(username):
+    waiting_for_cities[username] = True
 
 
-def clear_waiting(chat_id):
-    waiting = requests.get(waiting_url).json().get('result') or {}
-    waiting[chat_id] = False
-    requests.post(waiting_url, json=waiting)
-
-def is_waiting(chat_id):
-    waiting = requests.get(waiting_url).json().get('result') or {}
-    return waiting.get(chat_id, False)
+def clear_waiting(username):
+    waiting_for_cities[username] = False
 
 
-def save_city(chat_id, cityname):
-    cities = requests.get(cities_url).json().get('result') or {}
-    cities[chat_id] = cityname
-    requests.post(cities_url, json=cities)
+def is_waiting(username):
+    if username in waiting_for_cities and waiting_for_cities[username] == True:
+        return True
 
 
-def get_city(chat_id):
-    cities = requests.get(cities_url).json().get('result') or {}
-    return cities.get(chat_id)
+def get_city(username):
+    city_from_db = City.query.filter_by(username=username).first()
+    return city_from_db.city_name
+
+
+def save_city(username, cityname):
+    """ Сохранить город пользователя в БД """
+    # пытаемся достать город из базы данных
+    city_from_db = City.query.filter_by(username=username).first()
+
+    # если он есть - меняем имя города на новое (которое передал юзер)
+    if city_from_db:
+        city_from_db.city_name = cityname
+
+    # если его нет - создаем новый город
+    else:
+        city_from_db = City(city_name=cityname, username=username)
+
+    # сохраняем город обратно в базу
+    db.session.add(city_from_db)
+    db.session.commit()
+
 
 
 
 def process_chat_message(msg):
-
-    pprint(msg)
     text = msg['text']
-    chat_id = str(msg['chat']['id'])
-    print(chat_id + ': ' + text)
+    username = msg['from']['username']
+    print(username + ': ' + text)
 
     if text == 'Установить город':
-        set_waiting(chat_id)
+        set_waiting(username)
         reply = 'Отправь мне свой город'
 
     elif text == 'Узнать погоду':
 
         # пытаемся достать город из базы данных
-        city = get_city(chat_id)
+        city = get_city(username)
 
         # если он есть - меняем имя города на новое (которое передал юзер)
         if city:
@@ -69,11 +70,11 @@ def process_chat_message(msg):
     else:
         # если бот ждет от пользователя город - то сохраняем пользовательский ввод.
         # иначе говорим, что не поняли пользователя
-        if is_waiting(chat_id):
+        if is_waiting(username):
 
-            save_city(chat_id=chat_id, cityname=text)
+            save_city(username=username, cityname=text)
 
-            clear_waiting(chat_id)
+            clear_waiting(username)
 
             reply = 'Устанавливаю город ' + text
         else:

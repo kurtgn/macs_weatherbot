@@ -24,13 +24,13 @@ class City(db.Model):
 db.create_all()
 
 app.config['FLASK_ADMIN_SWATCH'] = 'flatly'
-admin = Admin(app, name='Weatherbot', template_mode='bootstrap3')
+admin = Admin(app, name='Database', template_mode='bootstrap3')
 admin.add_view(ModelView(City, db.session))
 
 
 @app.route("/")
 def hello():
-    return redirect('/admin/')
+    return redirect('/admin/city/')
 
 
 if __name__ == '__main__':
