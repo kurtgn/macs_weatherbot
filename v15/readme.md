@@ -3,8 +3,8 @@
 
 - Скачайте еще две библиотеки для работы с Amazon: `aws-cli, zappa`
 - Настройте компьютер командой `aws configure`. Он запросит логин и пароль
-  - **AWS Access Key ID**: AKIAUJXLJDDRZW5XJRHO
-  - **AWS Secret Access Key**: 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
+  - **AWS Access Key ID**: см. Google Docs
+  - **AWS Secret Access Key**: см. Google Docs
   - **Default region name**: оставить пустым
   - **Default output format**: оставить пустым
     
