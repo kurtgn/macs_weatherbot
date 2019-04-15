@@ -9,7 +9,6 @@ def process_chat_message(msg):
 
     text = msg['text']
     username = msg['from']['username']
-    print(username + ': ' + text)
 
     if text == 'Установить город':
         reply = 'Отправь мне свой город'
