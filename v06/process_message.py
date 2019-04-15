@@ -10,7 +10,7 @@ def process_chat_message(msg):
     global waiting_for_cities
 
     text = msg['text']
-    username = msg['from']['username']
+    chat_id = str(msg['from']['id'])
 
     if text == 'Установить город':
         reply = 'Отправь мне свой город'
