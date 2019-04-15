@@ -24,7 +24,7 @@ def process_chat_message(msg):
         # пытаемся достать город из базы данных
         city_from_db = City.query.filter_by(username=username).first()
 
-        # если он есть - меняем имя города на новое (которое передал юзер)
+        # если он есть - достаем имя и запрашиваем погоду
         if city_from_db:
             city_name = city_from_db.city_name
             reply = get_weather(city_name)

@@ -60,7 +60,7 @@ def process_chat_message(msg):
         # пытаемся достать город из базы данных
         city = get_city(chat_id)
 
-        # если он есть - меняем имя города на новое (которое передал юзер)
+        # если он есть - достаем имя и запрашиваем погоду
         if city:
             reply = get_weather(city)
         else:
