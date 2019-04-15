@@ -27,7 +27,7 @@ def process_chat_message(msg):
     else:
         # если бот ждет от пользователя город - то сохраняем пользовательский ввод.
         # иначе говорим, что не поняли пользователя
-        if chat_id in waiting_for_cities and waiting_for_cities[username] == True:
+        if chat_id in waiting_for_cities and waiting_for_cities[chat_id] == True:
             cities[chat_id] = text
             waiting_for_cities[chat_id] = False
             reply = 'Устанавливаю город ' + text
