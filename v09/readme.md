@@ -50,7 +50,7 @@ city = cities[username]
 reply = get_weather(city)
 ```
 
-
+---
 # ✅ Задание 
 
 Файл `weather.py` работает не только вместе с чатботом, 

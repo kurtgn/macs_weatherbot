@@ -8,8 +8,9 @@
 from process_message import process_chat_message
 ```
 
+---
 
-# Задание 
+# ✅ Задание 
 
 
 - Откройте файл `process_message.py`, который мы создали. 
