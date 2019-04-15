@@ -1,3 +1,14 @@
+# 4. Функция в отдельном файле
+Создайте файл `process_message.py`, перенесите туда функцию `process_chat_message` - 
+и импортируйте в файл с логикой бота. 
+
+Строка импорта должна быть такой:
+
+```python
+from process_message import process_chat_message
+```
+
+
 # Задание 
 
 
